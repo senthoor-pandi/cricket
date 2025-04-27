@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Winner Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Add custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md transform transition-all hover:scale-105">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Cricket Winner Prediction</h1>
+        <div class="mb-4">
+            <label for="team1" class="block text-sm font-medium text-gray-700 mb-2">Team 1:</label>
+            <select id="team1" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                <option value="Mumbai Indians">Mumbai Indians</option>
+                <option value="Chennai Super Kings">Chennai Super Kings</option>
+                <option value="Delhi Capitals">Delhi Capitals</option>
+                <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+                <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+                <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+                <option value="Rajasthan Royals">Rajasthan Royals</option>
+                <option value="Punjab Kings">Punjab Kings</option>
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label for="team2" class="block text-sm font-medium text-gray-700 mb-2">Team 2:</label>
+            <select id="team2" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                <option value="Mumbai Indians">Mumbai Indians</option>
+                <option value="Chennai Super Kings">Chennai Super Kings</option>
+                <option value="Delhi Capitals">Delhi Capitals</option>
+                <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+                <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+                <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+                <option value="Rajasthan Royals">Rajasthan Royals</option>
+                <option value="Punjab Kings">Punjab Kings</option>
+            </select>
+        </div>
+        <div class="mb-6">
+            <label for="venue" class="block text-sm font-medium text-gray-700 mb-2">Venue:</label>
+            <select id="venue" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                <option value="Wankhede Stadium">Wankhede Stadium</option>
+                <option value="Eden Gardens">Eden Gardens</option>
+                <option value="Arun Jaitley Stadium">Arun Jaitley Stadium</option>
+                <option value="M. Chinnaswamy Stadium">M. Chinnaswamy Stadium</option>
+                <option value="Rajiv Gandhi International Cricket Stadium">Rajiv Gandhi International Cricket Stadium</option>
+                <option value="Punjab Cricket Association IS Bindra Stadium">Punjab Cricket Association IS Bindra Stadium</option>
+            </select>
+        </div>
+        
+        <button onclick="predictWinner()" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-300">Predict Winner</button>
+
+        <div class="result mt-6 text-center text-xl font-semibold text-gray-800 fade-in" id="result"></div>
+    </div>
+
+    <script>
+        async function predictWinner() {
+            const team1 = document.getElementById('team1').value;
+            const team2 = document.getElementById('team2').value;
+            const venue = document.getElementById('venue').value;
+            // Send POST request to backend
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ team1, team2, venue })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+
+            if (data.error) {
+                resultDiv.textContent = data.error;
+            } else {
+                resultDiv.textContent = `Predicted Winner: ${data.winner}`;
+                // Trigger confetti animation
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']
+                });
+            }
+        }
+    </script>
+</body>
+</html>
