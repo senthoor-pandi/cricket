@@ -1,12 +1,12 @@
-# model/train_model.py
-
+# train_model.py
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 import pickle
+from sklearn.preprocessing import LabelEncoder
 
 # Load dataset
-df = pd.read_csv('../dataset/matches.csv')
+df = pd.read_csv('dataset/matches.csv')
 
 # Select important columns
 df = df[['team1', 'team2', 'venue', 'winner']]
@@ -15,11 +15,10 @@ df = df[['team1', 'team2', 'venue', 'winner']]
 df = df.dropna()
 
 # Prepare features and target
-X = df[['team1', 'team2', 'venue']]
+X = df[['team1', 'team2', 'venue']].copy()
 y = df['winner']
 
-# Convert text columns to numbers (Label Encoding)
-from sklearn.preprocessing import LabelEncoder
+# Label Encoding
 le_team = LabelEncoder()
 le_venue = LabelEncoder()
 
@@ -36,13 +35,13 @@ model = DecisionTreeClassifier()
 model.fit(X_train, y_train)
 
 # Save the model and encoders
-with open('../model/cricket_model.pkl', 'wb') as f:
+with open('model/cricket_model.pkl', 'wb') as f:
     pickle.dump(model, f)
 
-with open('../model/team_encoder.pkl', 'wb') as f:
+with open('model/team_encoder.pkl', 'wb') as f:
     pickle.dump(le_team, f)
 
-with open('../model/venue_encoder.pkl', 'wb') as f:
+with open('model/venue_encoder.pkl', 'wb') as f:
     pickle.dump(le_venue, f)
 
 print("✅ Model trained and saved successfully!")
